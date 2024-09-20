@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundraiser Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .fundraiser { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .menu { margin-bottom: 20px; }
+        .menu a { margin-right: 10px; text-decoration: none; color: #007BFF; }
+    </style>
+</head>
+<body>
+
+    <div class="menu">
+        <a href="/">Home</a>
+        <a href="/search.html">Search Fundraisers</a>
+    </div>
+
+    <h1>Fundraiser Details</h1>
+    <div id="fundraiser"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const fundraiserId = urlParams.get('id');
+
+        if (!fundraiserId) {
+            document.getElementById('fundraiser').innerHTML = '<p>Fundraiser not found.</p>';
+        } else {
+            fetch(`/fundraiser/${fundraiserId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    document.getElementById('fundraiser').innerHTML = '<p>Fundraiser not found.</p>';
+                } else {
+                    const fundraiser = data[0];
+                    const div = document.createElement('div');
+                    div.className = 'fundraiser';
+                    div.innerHTML = `<h2>${fundraiser.CAPTION}</h2>
+                                     <p><strong>Organized by:</strong> ${fundraiser.ORGANIZER}</p>
+                                     <p><strong>Target Funding:</strong> ${fundraiser.TARGET_FUNDING} AUD</p>
+                                     <p><strong>Current Funding:</strong> ${fundraiser.CURRENT_FUNDING} AUD</p>
+                                     <p><strong>City:</strong> ${fundraiser.CITY}</p>
+                                     <p><strong>Category:</strong> ${fundraiser.CATEGORY}</p>
+                                     <button onclick="alert('This feature is under construction')">Donate</button>`;
+                    document.getElementById('fundraiser').appendChild(div);
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

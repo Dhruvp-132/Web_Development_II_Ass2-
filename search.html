@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crowdfunding Platform - Search Fundraisers</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .menu { margin-bottom: 20px; }
+        .menu a { margin-right: 10px; text-decoration: none; color: #007BFF; }
+        .fundraiser { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="menu">
+        <a href="/">Home</a>
+        <a href="/search.html">Search Fundraisers</a>
+    </div>
+
+    <h1>Search Fundraisers</h1>
+    <form id="searchForm">
+        <label for="organizer">Organizer:</label>
+        <input type="text" id="organizer" name="organizer">
+        <br><br>
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city">
+        <br><br>
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category">
+        <br><br>
+        <button type="button" onclick="searchFundraisers()">Search</button>
+        <button type="button" onclick="clearCheckboxes()">Clear</button>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        function searchFundraisers() {
+            const organizer = document.getElementById('organizer').value;
+            const city = document.getElementById('city').value;
+            const category = document.getElementById('category').value;
+
+            if (!organizer && !city && !category) {
+                alert('Please select at least one search criterion.');
+                return;
+            }
+
+            const query = `/search?organizer=${organizer}&city=${city}&category=${category}`;
+            
+            fetch(query)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('results');
+                container.innerHTML = ''; // Clear previous results
+                if (data.length === 0) {
+                    container.innerHTML = '<p style="color: red; font-weight: bold;">No fundraisers found.</p>';
+                } else {
+                    data.forEach(fundraiser => {
+                        const div = document.createElement('div');
+                        div.className = 'fundraiser';
+                        div.innerHTML = `<h2>${fundraiser.CAPTION}</h2>
+                                         <p>Organized by: ${fundraiser.ORGANIZER}</p>
+                                         <p>City: ${fundraiser.CITY}</p>
+                                         <a href="/fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>`;
+                        container.appendChild(div);
+                    });
+                }
+            });
+        }
+
+        function clearCheckboxes() {
+            document.getElementById('organizer').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('results').innerHTML = ''; // Clear results
+        }
+    </script>
+
+</body>
+</html>

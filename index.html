@@ -1,3 +1,55 @@
-<html>
-    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crowdfunding Platform - Home</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .fundraiser { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .fundraiser img { max-width: 100%; height: auto; }
+        .menu { margin-bottom: 20px; }
+        .menu a { margin-right: 10px; text-decoration: none; color: #007BFF; }
+    </style>
+</head>
+<body>
+
+    <div class="menu">
+        <a href="/">Home</a>
+        <a href="/search.html">Search Fundraisers</a>
+    </div>
+
+    <h1>Welcome to Our Non-profit Crowdfunding Platform</h1>
+    <p>We connect individuals and organizations to help raise funds for a variety of causes. Whether you're supporting a local charity or a global movement, we provide a secure platform to make an impact.</p>
+
+    <div id="fundraisers"></div>
+
+    <script>
+        fetch('/fundraisers')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('fundraisers');
+            data.forEach(fundraiser => {
+                const div = document.createElement('div');
+                div.className = 'fundraiser';
+
+                const imageUrl = 'https://chaptermentalhealth.org/wp-content/uploads/2020/01/Fundraising-Ideas.jpg'; 
+
+                div.innerHTML = `
+                    <img src="${imageUrl}" alt="Fundraiser Image">
+                    <h2>${fundraiser.CAPTION}</h2>
+                    <p><strong>Organized by:</strong> ${fundraiser.ORGANIZER}</p>
+                    <p><strong>Target Funding:</strong> ${fundraiser.TARGET_FUNDING} AUD</p>
+                    <p><strong>Current Funding:</strong> ${fundraiser.CURRENT_FUNDING} AUD</p>
+                    <p><strong>City:</strong> ${fundraiser.CITY}</p>
+                    <p><strong>Category:</strong> ${fundraiser.CATEGORY}</p>
+                    <a href="/fundraiser.html?id=${fundraiser.FUNDRAISER_ID}" class="button">View Details</a>
+                `;
+                container.appendChild(div);
+            });
+        });
+    </script>
+
+</body>
 </html>
+
