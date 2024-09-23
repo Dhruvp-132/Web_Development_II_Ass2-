@@ -5,88 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fundraiser Details</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .menu { margin-bottom: 20px; }
-        .menu a { margin-right: 10px; text-decoration: none; color: #007BFF; }
-        .fundraiser-details { border: 1px solid #ddd; padding: 20px; border-radius: 5px; width: 100%; max-width: 600px; }
-        .fundraiser-details h2 { margin-top: 0; }
-        .fundraiser-details p { margin: 5px 0; }
-        .donate-btn { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-        .donate-btn:hover { background-color: #218838; }
+        body { font-family: Arial, sans-serif; }
+        .fundraiser { margin: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .donate-button { margin-top: 20px; padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="menu">
-        <a href="index.html">Home</a>
-        <a href="search.html">Search Fundraisers</a>
-    </div>
-
-    <div id="fundraiserContainer" class="fundraiser-details">
-        <h2>Loading fundraiser details...</h2>
-    </div>
+    <div id="fundraiser" class="fundraiser"></div>
 
     <script>
-        // Function to retrieve query parameters
-        function getQueryParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                id: params.get('id')
-            };
-        }
+        function getFundraiserDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
 
-        // Function to fetch and display fundraiser details
-        function loadFundraiserDetails() {
-            const { id } = getQueryParams();  // Get the fundraiser ID from query string
             if (!id) {
-                document.getElementById('fundraiserContainer').innerHTML = "<p style='color: red;'>No fundraiser selected.</p>";
+                document.getElementById('fundraiser').innerHTML = '<p style="color: red;">No fundraiser ID provided.</p>';
                 return;
             }
 
-            const query = `http://localhost:3000/fundraiser/${id}`;
-            
-            fetch(query)
+            fetch(`http://localhost:3000/fundraiser/${id}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
+                        throw new Error('Network response was not ok');
                     }
                     return response.json();
                 })
                 .then(data => {
                     if (data.length === 0) {
-                        document.getElementById('fundraiserContainer').innerHTML = "<p style='color: red;'>Fundraiser not found.</p>";
+                        document.getElementById('fundraiser').innerHTML = '<p style="color: red;">Fundraiser not found.</p>';
                     } else {
-                        const fundraiser = data[0];  // Only one fundraiser is expected
-                        displayFundraiserDetails(fundraiser);
+                        const fundraiser = data[0];
+                        document.getElementById('fundraiser').innerHTML = `
+                            <h2>${fundraiser.CAPTION}</h2>
+                            <p><strong>Organizer:</strong> ${fundraiser.ORGANIZER}</p>
+                            <p><strong>City:</strong> ${fundraiser.CITY}</p>
+                            <p><strong>Category:</strong> ${fundraiser.CATEGORY}</p>
+                            <p><strong>Description:</strong> ${fundraiser.DESCRIPTION}</p>
+                            <button class="donate-button" onclick="donate()">Donate</button>
+                        `;
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('fundraiserContainer').innerHTML = `<p style="color: red;">An error occurred: ${error.message}</p>`;
+                    document.getElementById('fundraiser').innerHTML = `<p style="color: red;">An error occurred: ${error.message}</p>`;
                 });
         }
 
-        // Function to display fundraiser details
-        function displayFundraiserDetails(fundraiser) {
-            const container = document.getElementById('fundraiserContainer');
-            container.innerHTML = `
-                <h2>${fundraiser.CAPTION}</h2>
-                <p><strong>Organizer:</strong> ${fundraiser.ORGANIZER}</p>
-                <p><strong>City:</strong> ${fundraiser.CITY}</p>
-                <p><strong>Category:</strong> ${fundraiser.CATEGORY}</p>
-                <p><strong>Description:</strong> ${fundraiser.DESCRIPTION}</p>
-                <button class="donate-btn" onclick="showDonateDialog()">Donate</button>
-            `;
+        function donate() {
+            alert("This feature is under construction.");
         }
 
-        // Function to show "Donate" dialog
-        function showDonateDialog() {
-            alert("This feature is under construction");
-        }
-
-        // Load the fundraiser details on page load
-        window.onload = loadFundraiserDetails;
-
+        // Fetch fundraiser details on page load
+        getFundraiserDetails();
     </script>
+
 </body>
 </html>
