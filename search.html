@@ -14,7 +14,7 @@
 <body>
 
     <div class="menu">
-        <a href="index.html"">Home</a>
+        <a href="index.html">Home</a>
         <a href="search.html">Search Fundraisers</a>
     </div>
 
@@ -30,65 +30,64 @@
         <input type="text" id="category" name="category">
         <br><br>
         <button type="button" onclick="searchFundraisers()">Search</button>
-        <button type="button" onclick="clearCheckboxes()">Clear</button>
+        <button type="button" onclick="clearFields()">Clear</button>
     </form>
 
     <div id="results"></div>
 
     <script>
         function searchFundraisers() {
-    const organizer = document.getElementById('organizer').value;
-    const city = document.getElementById('city').value;
-    const category = document.getElementById('category').value;
+            const organizer = document.getElementById('organizer').value;
+            const city = document.getElementById('city').value;
+            const category = document.getElementById('category').value;
 
-    if (!organizer && !city && !category) {
-        alert('Please select at least one search criterion.');
-        return;
-    }
-
-    // Build query string 
-    const query = `http://localhost:3000/fundraisers?organizer=${encodeURIComponent(organizer)}&city=${encodeURIComponent(city)}&category=${encodeURIComponent(category)}`;
-
-
-    fetch(query)  
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
+            if (!organizer && !city && !category) {
+                alert('Please provide at least one search criterion.');
+                return;
             }
-            return response.json(); 
-        })
-        .then(data => {
-            const container = document.getElementById('results');
-            container.innerHTML = '';  // Clear previous results
-            if (data.length === 0) {
-                container.innerHTML = '<p style="color: red; font-weight: bold;">No fundraisers found.</p>';
-            } else {
-                data.forEach(fundraiser => {
-                    const div = document.createElement('div');
-                    div.className = 'fundraiser';
-                    div.innerHTML = `<h2>${fundraiser.CAPTION}</h2>
-                                     <p>Organized by: ${fundraiser.ORGANIZER}</p>
-                                     <p>City: ${fundraiser.CITY}</p>
-                                     <a href="/fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>`;
-                    container.appendChild(div);
+
+            // Build query string
+            const query = `http://localhost:3000/search}`;
+
+            fetch(query)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json(); 
+                })
+                .then(data => {
+                    const container = document.getElementById('results');
+                    container.innerHTML = '';  // Clear previous results
+                    if (data.length === 0) {
+                        container.innerHTML = '<p style="color: red; font-weight: bold;">No fundraisers found.</p>';
+                    } else {
+                        data.forEach(fundraiser => {
+                            const div = document.createElement('div');
+                            div.className = 'fundraiser';
+                            div.innerHTML = `
+                                <h2>${fundraiser.CAPTION}</h2>
+                                <p>Organized by: ${fundraiser.ORGANIZER}</p>
+                                <p>City: ${fundraiser.CITY}</p>
+                                <p>Category: ${fundraiser.CATEGORY}</p>
+                                <a href="/fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>`;
+                            container.appendChild(div);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const container = document.getElementById('results');
+                    container.innerHTML = `<p style="color: red;">An error occurred: ${error.message}</p>`;
                 });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            const container = document.getElementById('results');
-            container.innerHTML = `<p style="color: red;">An error occurred: ${error.message}</p>`;
-        });
-}
+        }
 
-function clearCheckboxes() {
-    document.getElementById('organizer').value = '';
-    document.getElementById('city').value = '';
-    document.getElementById('category').value = '';
-    document.getElementById('results').innerHTML = '';  // Clear results
-}
-
-        
+        function clearFields() {
+            document.getElementById('organizer').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('results').innerHTML = '';  // Clear results
+        }
     </script>
 
 </body>
