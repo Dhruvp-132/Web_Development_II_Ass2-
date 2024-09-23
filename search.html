@@ -47,8 +47,15 @@
             }
 
             // Build query string
-            const query = `http://localhost:3000/search}`;
+            let query = `http://localhost:3000/search?`;
+            if (organizer) query += `organizer=${encodeURIComponent(organizer)}&`;
+            if (city) query += `city=${encodeURIComponent(city)}&`;
+            if (category) query += `category=${encodeURIComponent(category)}`;
 
+            // Remove trailing '&' or '?'
+            query = query.replace(/[&?]$/, '');
+
+            // Fetch data from the server
             fetch(query)
                 .then(response => {
                     if (!response.ok) {
