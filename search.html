@@ -46,9 +46,11 @@
                 return;
             }
 
-            const query = `/search?organizer=${organizer}&city=${city}&category=${category}`;
+            const query = 'http://localhost:3000/fundraisers?organizer=' + organizer + '&city=' + city + '&category=' + category;
             
-            fetch(query)
+            fetch(query, {
+                mode: 'no-cors'
+            })
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('results');
@@ -59,13 +61,16 @@
                     data.forEach(fundraiser => {
                         const div = document.createElement('div');
                         div.className = 'fundraiser';
-                        div.innerHTML = `<h2>${fundraiser.CAPTION}</h2>
-                                         <p>Organized by: ${fundraiser.ORGANIZER}</p>
-                                         <p>City: ${fundraiser.CITY}</p>
-                                         <a href="/fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>`;
+                        div.innerHTML = '<h2>' + fundraiser.CAPTION + '</h2>' +
+                                         '<p>Organized by: ' + fundraiser.ORGANIZER + '</p>' +
+                                         '<p>City: ' + fundraiser.CITY + '</p>' +
+                                         '<a href="/fundraiser.html?id=' + fundraiser.FUNDRAISER_ID + '">View Details</a>';
                         container.appendChild(div);
                     });
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
         }
 
