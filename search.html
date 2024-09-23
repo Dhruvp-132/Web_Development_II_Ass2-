@@ -14,8 +14,8 @@
 <body>
 
     <div class="menu">
-        <a href="/">Home</a>
-        <a href="/search.html">Search Fundraisers</a>
+        <a href=""C:\Users\shree\OneDrive - Southern Cross University\Documents\GitHub\Web_Development_II_Ass2-\index.html"">Home</a>
+        <a href=""C:\Users\shree\OneDrive - Southern Cross University\Documents\GitHub\Web_Development_II_Ass2-\search.html"">Search Fundraisers</a>
     </div>
 
     <h1>Search Fundraisers</h1>
@@ -37,49 +37,58 @@
 
     <script>
         function searchFundraisers() {
-            const organizer = document.getElementById('organizer').value;
-            const city = document.getElementById('city').value;
-            const category = document.getElementById('category').value;
+    const organizer = document.getElementById('organizer').value;
+    const city = document.getElementById('city').value;
+    const category = document.getElementById('category').value;
 
-            if (!organizer && !city && !category) {
-                alert('Please select at least one search criterion.');
-                return;
+    if (!organizer && !city && !category) {
+        alert('Please select at least one search criterion.');
+        return;
+    }
+
+    // Build query string 
+    const query = `http://localhost:3000/fundraisers?organizer=${encodeURIComponent(organizer)}&city=${encodeURIComponent(city)}&category=${encodeURIComponent(category)}`;
+
+
+    fetch(query)  // Removed 'no-cors' mode
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
             }
+            return response.json(); 
+        })
+        .then(data => {
+            const container = document.getElementById('results');
+            container.innerHTML = '';  // Clear previous results
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: red; font-weight: bold;">No fundraisers found.</p>';
+            } else {
+                data.forEach(fundraiser => {
+                    const div = document.createElement('div');
+                    div.className = 'fundraiser';
+                    div.innerHTML = `<h2>${fundraiser.CAPTION}</h2>
+                                     <p>Organized by: ${fundraiser.ORGANIZER}</p>
+                                     <p>City: ${fundraiser.CITY}</p>
+                                     <a href="/fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>`;
+                    container.appendChild(div);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const container = document.getElementById('results');
+            container.innerHTML = `<p style="color: red;">An error occurred: ${error.message}</p>`;
+        });
+}
 
-            const query = 'http://localhost:3000/fundraisers?organizer=' + organizer + '&city=' + city + '&category=' + category;
-            
-            fetch(query, {
-                mode: 'no-cors'
-            })
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('results');
-                container.innerHTML = ''; // Clear previous results
-                if (data.length === 0) {
-                    container.innerHTML = '<p style="color: red; font-weight: bold;">No fundraisers found.</p>';
-                } else {
-                    data.forEach(fundraiser => {
-                        const div = document.createElement('div');
-                        div.className = 'fundraiser';
-                        div.innerHTML = '<h2>' + fundraiser.CAPTION + '</h2>' +
-                                         '<p>Organized by: ' + fundraiser.ORGANIZER + '</p>' +
-                                         '<p>City: ' + fundraiser.CITY + '</p>' +
-                                         '<a href="/fundraiser.html?id=' + fundraiser.FUNDRAISER_ID + '">View Details</a>';
-                        container.appendChild(div);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
+function clearCheckboxes() {
+    document.getElementById('organizer').value = '';
+    document.getElementById('city').value = '';
+    document.getElementById('category').value = '';
+    document.getElementById('results').innerHTML = '';  // Clear results
+}
 
-        function clearCheckboxes() {
-            document.getElementById('organizer').value = '';
-            document.getElementById('city').value = '';
-            document.getElementById('category').value = '';
-            document.getElementById('results').innerHTML = ''; // Clear results
-        }
+        
     </script>
 
 </body>
