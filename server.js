@@ -15,7 +15,7 @@ app.get('/fundraisers', (req, res) => {
     connection.query(sql, (err, result) => {
         if (err) throw err;
         res.json(result);
-    });
+    });	
 });
 
 // Retrieve all categories
@@ -70,7 +70,7 @@ app.get('/fundraiser/:id', (req, res) => {
     });
 });
 
-// Start the server on port 3000
+// Start the server on port 3306
 app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+    console.log('Server is running on port 3306');
 });
