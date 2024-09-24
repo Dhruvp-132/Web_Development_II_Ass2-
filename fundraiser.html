@@ -28,11 +28,7 @@
             max-width: 800px;
             margin: auto;
         }
-        .fundraiser img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
+     
         .fundraiser h2 {
             color: #343a40;
         }
@@ -98,7 +94,7 @@
                         const fundraiser = data[0];  // Assuming the API returns an array
                         const isActive = fundraiser.ACTIVE ? 'Active' : 'Suspended';
                         document.getElementById('fundraiser').innerHTML = `
-                            <img src="https://example.com/fundraiser-image.jpg" alt="Fundraiser Image">
+                        
                             <h2>${fundraiser.CAPTION}</h2>
                             <p><strong>ID:</strong> ${fundraiser.FUNDRAISER_ID}</p>
                             <p><strong>Organized by:</strong> ${fundraiser.ORGANIZER}</p>
