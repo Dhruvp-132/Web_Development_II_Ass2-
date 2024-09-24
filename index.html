@@ -6,128 +6,127 @@
     <title>Crowdfunding Platform - Home</title>
     <style>
         body { 
-            font-family: 'Arial', sans-serif; 
+            font-family: Arial, sans-serif; 
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
         }
-
         .banner {
-            background-image: url('https://thumbs.dreamstime.com/z/blue-tape-fundraiser-caption-fundraiser-text-ribbon-designed-white-title-blue-tape-vector-banner-133979184.jpg?ct=jpeg');
+            background-image: url('https://www.dreamstime.com/blue-tape-fundraiser-caption-fundraiser-text-ribbon-designed-white-title-blue-tape-vector-banner-image133979184');
             background-size: cover;
-            background-position: center;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-top: 300px;
-            padding-bottom: 100px;
-
-        }
-
-      
-
-        .menu {
             text-align: center;
-            background-color: #007BFF;
-            padding: 10px;
-        }
-
-        .menu a {
-            margin-right: 20px;
-            text-decoration: none;
+            padding: 60px 20px;
             color: white;
-            font-size: 18px;
         }
-
-        .content {
-            max-width: 1200px;
-            margin: 20px auto;
+        .banner h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+        .container {
             padding: 20px;
         }
-
         .fundraiser {
             margin: 20px 0;
             padding: 20px;
-            background-color: white;
             border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            background-color: white;
         }
-
-        .fundraiser img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
+        .fundraiser img { 
+            max-width: 100%; 
+            height: auto; 
         }
-
-        .fundraiser h2 {
-            font-size: 24px;
+        .menu { 
+            margin-bottom: 20px; 
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+        }
+        .menu a { 
+            margin-right: 15px; 
+            text-decoration: none; 
+            color: white; 
+            font-weight: bold;
+        }
+        .welcome-section, .contact-info {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .contact-info p {
+            margin: 5px 0;
+        }
+        h2 {
             color: #333;
         }
-
-        .fundraiser p {
-            font-size: 16px;
-            color: #555;
-        }
-
         .button {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #007BFF;
             color: white;
+            background-color: #28a745;
             text-decoration: none;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            font-size: 16px;
         }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #007BFF;
-            color: white;
-            margin-top: 20px;
+        .fundraiser h2 {
+            margin-top: 0;
         }
     </style>
 </head>
 <body>
 
-    <!-- Banner Section -->
-    <div class="banner">
-       
-    </div>
-
-    <!-- Navigation Menu -->
     <div class="menu">
         <a href="index.html">Home</a>
         <a href="search.html">Fundraisers</a>
     </div>
 
-    <!-- Main Content -->
-    <div class="content">
-        <h2>Latest Fundraisers</h2>
-        <div id="fundraisers"></div>
+    <div class="banner">
+        <h1>Welcome to Our Non-profit Crowdfunding Platform</h1>
+        <p>Empowering communities through collective action and support.</p>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        &copy; 2024 Crowdfunding Platform. All Rights Reserved.
-    </footer>
+    <div class="container">
 
-    <!-- JavaScript to Fetch and Display Fundraisers -->
+        <!-- Static content: General information -->
+        <div class="welcome-section">
+            <h2>About Us</h2>
+            <p>We are dedicated to supporting individuals and communities in need. From medical emergencies to education, 
+            disaster relief, and more, we provide a platform where people can make a difference by contributing to important causes.</p>
+            <p>Through our crowdfunding platform, we ensure that funds go directly to those who need it most, enabling 
+            real change and tangible impact.</p>
+        </div>
+
+        <div class="contact-info">
+            <h2>Contact Us</h2>
+            <p><strong>Email:</strong> support@nonprofitcrowdfunding.com</p>
+            <p><strong>Phone:</strong> +1 (800) 123-4567</p>
+            <p><strong>Address:</strong> 123 Charity Road, Kindness City, Hope State, 45678</p>
+        </div>
+
+        <!-- Dynamic content: Active fundraisers -->
+        <h2>Active Fundraisers</h2>
+        <div id="fundraisers"></div>
+
+    </div>
+
     <script>
-        fetch('/fundraisers')
+        fetch('http://localhost:3000/fundraisers')  // Assuming the API is hosted locally
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('fundraisers');
+            if (data.length === 0) {
+                container.innerHTML = '<p>No active fundraisers at the moment.</p>';
+                return;
+            }
+
             data.forEach(fundraiser => {
                 const div = document.createElement('div');
                 div.className = 'fundraiser';
 
+                // Placeholder image for each fundraiser
                 const imageUrl = 'https://chaptermentalhealth.org/wp-content/uploads/2020/01/Fundraising-Ideas.jpg'; 
 
                 div.innerHTML = `
@@ -138,10 +137,14 @@
                     <p><strong>Current Funding:</strong> ${fundraiser.CURRENT_FUNDING} AUD</p>
                     <p><strong>City:</strong> ${fundraiser.CITY}</p>
                     <p><strong>Category:</strong> ${fundraiser.CATEGORY}</p>
-                    <a href="/fundraiser.html?id=${fundraiser.FUNDRAISER_ID}" class="button">View Details</a>
+                    <a href="fundraiser.html?id=${fundraiser.FUNDRAISER_ID}" class="button">View Details</a>
                 `;
                 container.appendChild(div);
             });
+        })
+        .catch(error => {
+            console.error('Error fetching fundraisers:', error);
+            document.getElementById('fundraisers').innerHTML = '<p style="color: red;">Unable to load fundraisers. Please try again later.</p>';
         });
     </script>
 
