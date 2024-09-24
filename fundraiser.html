@@ -24,12 +24,15 @@
     <div id="fundraiser" class="fundraiser"></div>
 
     <script>
+        // Extract fundraiser ID from the query string
         function getFundraiserId() {
             const params = new URLSearchParams(window.location.search);
-            return params.get('id');
-            
+            const id = params.get('id');
+            console.log('Fundraiser ID:', id); // For debugging purposes
+            return id;
         }
 
+        // Fetch fundraiser details based on the selected fundraiser ID
         function fetchFundraiserDetails() {
             const fundraiserId = getFundraiserId();
             if (!fundraiserId) {
@@ -46,10 +49,10 @@
                     return response.json();
                 })
                 .then(data => {
-                    if (data.length === 0) {
+                    if (!data || data.length === 0) {
                         document.getElementById('fundraiser').innerHTML = '<p style="color: red;">Fundraiser not found.</p>';
                     } else {
-                        const fundraiser = data[1];  // Assuming the API returns an array
+                        const fundraiser = data[0];  // Assuming the API returns an array
                         document.getElementById('fundraiser').innerHTML = `
                             <h2>${fundraiser.CAPTION}</h2>
                             <p>Organized by: ${fundraiser.ORGANIZER}</p>
@@ -71,7 +74,7 @@
         }
 
         // Fetch fundraiser details on page load
-        fetchFundraiserDetails();
+        document.addEventListener('DOMContentLoaded', fetchFundraiserDetails);
     </script>
 
 </body>

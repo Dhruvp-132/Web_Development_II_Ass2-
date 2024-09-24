@@ -1,6 +1,10 @@
-const express = require("express"); 
+const express = require("express");
 const connection = require('./crowdfunding_db');
+const cors = require('cors');  // Import the cors middleware
 const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Retrieve all active fundraisers including category
 app.get('/fundraisers', (req, res) => {
