@@ -5,10 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crowdfunding Platform - Search Fundraisers</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .menu { margin-bottom: 20px; }
-        .menu a { margin-right: 10px; text-decoration: none; color: #007BFF; }
-        .fundraiser { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f5f5f5; 
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .menu { 
+            background-color: #007BFF; 
+            padding: 10px; 
+            text-align: center; 
+        }
+        .menu a { 
+            margin-right: 15px; 
+            text-decoration: none; 
+            color: white; 
+            font-weight: bold;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            padding: 20px 0;
+            margin: 0;
+            background-color: #007BFF;
+            color: white;
+            border-bottom: 4px solid #0056b3;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button {
+            padding: 12px;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .clear-btn {
+            background-color: #dc3545;
+        }
+        button.clear-btn:hover {
+            background-color: #c82333;
+        }
+        #results {
+            margin-top: 30px;
+        }
+        .fundraiser {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .fundraiser h2 {
+            margin-top: 0;
+            color: #007BFF;
+        }
+        .fundraiser a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .fundraiser a:hover {
+            background-color: #0056b3;
+        }
+        p {
+            color: #555;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            form {
+                gap: 10px;
+            }
+            button {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -19,21 +125,24 @@
     </div>
 
     <h1>Search Fundraisers</h1>
-    <form id="searchForm">
-        <label for="organizer">Organizer:</label>
-        <input type="text" id="organizer" name="organizer">
-        <br><br>
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city">
-        <br><br>
-        <label for="category">Category:</label>
-        <input type="text" id="category" name="category">
-        <br><br>
-        <button type="button" onclick="searchFundraisers()">Search</button>
-        <button type="button" onclick="clearFields()">Clear</button>
-    </form>
 
-    <div id="results"></div>
+    <div class="container">
+        <form id="searchForm">
+            <label for="organizer">Organizer:</label>
+            <input type="text" id="organizer" name="organizer" placeholder="Enter organizer's name">
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" placeholder="Enter city">
+
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" placeholder="Enter category">
+
+            <button type="button" onclick="searchFundraisers()">Search</button>
+            <button type="button" class="clear-btn" onclick="clearFields()">Clear</button>
+        </form>
+
+        <div id="results"></div>
+    </div>
 
     <script>
         function searchFundraisers() {
@@ -46,16 +155,13 @@
                 return;
             }
 
-            // Build query string
             let query = `http://localhost:3000/search?`;
             if (organizer) query += `organizer=${encodeURIComponent(organizer)}&`;
             if (city) query += `city=${encodeURIComponent(city)}&`;
             if (category) query += `category=${encodeURIComponent(category)}`;
 
-            // Remove trailing '&' or '?'
             query = query.replace(/[&?]$/, '');
 
-            // Fetch data from the server
             fetch(query)
                 .then(response => {
                     if (!response.ok) {
@@ -65,7 +171,7 @@
                 })
                 .then(data => {
                     const container = document.getElementById('results');
-                    container.innerHTML = '';  // Clear previous results
+                    container.innerHTML = '';  
                     if (data.length === 0) {
                         container.innerHTML = '<p style="color: red; font-weight: bold;">No fundraisers found.</p>';
                     } else {
@@ -77,7 +183,7 @@
                                 <p>Organized by: ${fundraiser.ORGANIZER}</p>
                                 <p>City: ${fundraiser.CITY}</p>
                                 <p>Category: ${fundraiser.CATEGORY}</p>
-                                <a href="fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>`;  <!-- Pass FUNDRAISER_ID in the URL -->
+                                <a href="fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>`;
                             container.appendChild(div);
                         });
                     }
@@ -93,7 +199,7 @@
             document.getElementById('organizer').value = '';
             document.getElementById('city').value = '';
             document.getElementById('category').value = '';
-            document.getElementById('results').innerHTML = '';  // Clear results
+            document.getElementById('results').innerHTML = '';  
         }
     </script>
 

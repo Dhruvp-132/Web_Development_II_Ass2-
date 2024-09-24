@@ -5,12 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fundraiser Details</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .menu { margin-bottom: 20px; }
-        .menu a { margin-right: 10px; text-decoration: none; color: #007BFF; }
-        .fundraiser { margin: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
-        .donate-button { background-color: #007BFF; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
-        .donate-button:hover { background-color: #0056b3; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .menu {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .menu a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+        .fundraiser-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .fundraiser img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .fundraiser h2 {
+            color: #343a40;
+        }
+        .fundraiser p {
+            color: #555;
+        }
+        .fundraiser strong {
+            color: #000;
+        }
+        .donate-button {
+            display: inline-block;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .donate-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -20,19 +64,18 @@
         <a href="search.html">Search Fundraisers</a>
     </div>
 
-    <h1>Fundraiser Details</h1>
-    <div id="fundraiser" class="fundraiser"></div>
+    <div class="fundraiser-container">
+        <div id="fundraiser" class="fundraiser"></div>
+    </div>
 
     <script>
-        // Extract fundraiser ID from the query string
         function getFundraiserId() {
             const params = new URLSearchParams(window.location.search);
             const id = params.get('id');
-            console.log('Fundraiser ID:', id); // For debugging purposes
+            console.log('Fundraiser ID:', id);
             return id;
         }
 
-        // Fetch fundraiser details based on the selected fundraiser ID
         function fetchFundraiserDetails() {
             const fundraiserId = getFundraiserId();
             if (!fundraiserId) {
@@ -53,11 +96,17 @@
                         document.getElementById('fundraiser').innerHTML = '<p style="color: red;">Fundraiser not found.</p>';
                     } else {
                         const fundraiser = data[0];  // Assuming the API returns an array
+                        const isActive = fundraiser.ACTIVE ? 'Active' : 'Suspended';
                         document.getElementById('fundraiser').innerHTML = `
+                            <img src="https://example.com/fundraiser-image.jpg" alt="Fundraiser Image">
                             <h2>${fundraiser.CAPTION}</h2>
-                            <p>Organized by: ${fundraiser.ORGANIZER}</p>
-                            <p>City: ${fundraiser.CITY}</p>
-                            <p>Category: ${fundraiser.CATEGORY}</p>
+                            <p><strong>ID:</strong> ${fundraiser.FUNDRAISER_ID}</p>
+                            <p><strong>Organized by:</strong> ${fundraiser.ORGANIZER}</p>
+                            <p><strong>Target Funding:</strong> ${fundraiser.TARGET_FUNDING} AUD</p>
+                            <p><strong>Current Funding:</strong> ${fundraiser.CURRENT_FUNDING} AUD</p>
+                            <p><strong>City:</strong> ${fundraiser.CITY}</p>
+                            <p><strong>Status:</strong> ${isActive}</p>
+                            <p><strong>Category:</strong> ${fundraiser.CATEGORY}</p>
                             <button class="donate-button" onclick="showDonateMessage()">Donate</button>
                         `;
                     }
@@ -72,7 +121,6 @@
             alert('This feature is under construction.');
         }
 
-        // Fetch fundraiser details on page load
         document.addEventListener('DOMContentLoaded', fetchFundraiserDetails);
     </script>
 
